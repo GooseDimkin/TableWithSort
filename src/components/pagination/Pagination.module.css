@@ -1,0 +1,8 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.page_item {
+    cursor: pointer;
+}
