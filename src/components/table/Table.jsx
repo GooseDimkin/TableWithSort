@@ -16,20 +16,39 @@ function Table(props) {
     const ref = React.createRef();
 
     const getIndexOfFilteredEqualsData = () => {
-        let result;
+        let indexes = [];
+
         if(selectedColumn === 'Date') {
-            result = props.data.map(d => d.date.substring(0, d.date.indexOf('T'))).indexOf(selectedValue)
+            for(let i = 0; i < props.data.length; ++i) {
+                if(props.data[i].date.substring(0, props.data[i].date.indexOf('T')) === selectedValue)
+                    indexes.push(i);
+            }
+            return indexes;
         }
+
         if(selectedColumn === 'Name') {
-            result = props.data.map(d => d.name).indexOf(selectedValue)
+            for(let i = 0; i < props.data.length; ++i) {
+                if(props.data[i].name.toLowerCase() === selectedValue.toLowerCase())
+                    indexes.push(i);
+            }
+            return indexes;
         }
+
         if(selectedColumn === 'Amount') {
-            result = props.data.map(d => d.amount).indexOf(parseInt(selectedValue))
+            for(let i = 0; i < props.data.length; ++i) {
+                if(props.data[i].amount === parseInt(selectedValue))
+                    indexes.push(i);
+            }
+            return indexes;
         }
+
         if(selectedColumn === 'Distance') {
-            result = props.data.map(d => d.distance).indexOf(parseInt(selectedValue))
+            for(let i = 0; i < props.data.length; ++i) {
+                if(props.data[i].distance === parseInt(selectedValue))
+                    indexes.push(i);
+            }
+            return indexes;
         }
-        return result
     }
 
     const getIndexOfFilteredContainsData = () => {
@@ -39,7 +58,7 @@ function Table(props) {
             result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')).includes(selectedValue) && d.date.indexOf())
         }
         if(selectedColumn === 'Name') {
-            result = props.data.map(d => d.name.includes(selectedValue) && d.name.indexOf())
+            result = props.data.map(d => d.name.toLowerCase().includes(selectedValue.toLowerCase()) && d.name.indexOf())
         }
         if(selectedColumn === 'Amount') {
             result = props.data.map(d => d.amount.toString().includes(selectedValue) && d.amount.toString().indexOf())
@@ -62,7 +81,7 @@ function Table(props) {
             result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')) > selectedValue)
         }
         if(selectedColumn === 'Name') {
-            result = props.data.map(d => d.name > selectedValue)
+            result = props.data.map(d => d.name.toLowerCase() > selectedValue.toLowerCase())
         }
         if(selectedColumn === 'Amount') {
             result = props.data.map(d => d.amount > selectedValue)
@@ -86,7 +105,7 @@ function Table(props) {
             result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')) < selectedValue)
         }
         if(selectedColumn === 'Name') {
-            result = props.data.map(d => d.name < selectedValue)
+            result = props.data.map(d => d.name.toLowerCase() < selectedValue.toLowerCase())
         }
         if(selectedColumn === 'Amount') {
             result = props.data.map(d => d.amount < selectedValue)
@@ -141,14 +160,14 @@ function Table(props) {
                             <td>{data.distance}</td>
                         </tr>
                     ))}
-                    {filter && selectedCondition === 'Equals' && props.data[getIndexOfFilteredEqualsData()] &&                      
+                    {filter && selectedCondition === 'Equals' && getIndexOfFilteredEqualsData().map(index => (
                         <tr>
-                            <td>{props.data[getIndexOfFilteredEqualsData()].date.substring(0, props.data[getIndexOfFilteredEqualsData()].date.indexOf('T'))}</td>
-                            <td>{props.data[getIndexOfFilteredEqualsData()].name}</td>
-                            <td>{props.data[getIndexOfFilteredEqualsData()].amount}</td>
-                            <td>{props.data[getIndexOfFilteredEqualsData()].distance}</td>
+                            <td>{props.data[index].date.substring(0, props.data[index].date.indexOf('T'))}</td>
+                            <td>{props.data[index].name}</td>
+                            <td>{props.data[index].amount}</td>
+                            <td>{props.data[index].distance}</td>
                         </tr>
-                    }
+                    ))}
                     {filter && selectedCondition === 'Contains' && getIndexOfFilteredContainsData().map(index => (
                         <tr>
                             <td>{props.data[index].date.substring(0, props.data[index].date.indexOf('T'))}</td>
@@ -176,7 +195,7 @@ function Table(props) {
                 </tbody>
             </table>
 
-            <Pagination postsPerPage={props.postsPerPage} totalPosts={props.totalPosts} paginate={props.paginate} />
+            {!filter && <Pagination postsPerPage={props.postsPerPage} totalPosts={props.totalPosts} paginate={props.paginate} />}
 
             <div className={styles.title}>Настрйки сортировки</div>
             <div className={styles.filter}>
@@ -206,7 +225,10 @@ function Table(props) {
                 </div>
             </div>
 
-            <div className={styles.confirmButton} onClick={confirmSortInfo}>Confirm</div>
+            <div className={styles.buttons}>
+                <div className={styles.confirmButton} onClick={confirmSortInfo}>Confirm</div>
+                <div className={styles.resetButton} onClick={() => setFilter(false)}>Reset</div>
+            </div>
         </div>
     );
 }
