@@ -18,14 +18,6 @@ function Table(props) {
     const getIndexOfFilteredEqualsData = () => {
         let indexes = [];
 
-        if(selectedColumn === 'Date') {
-            for(let i = 0; i < props.data.length; ++i) {
-                if(props.data[i].date.substring(0, props.data[i].date.indexOf('T')) === selectedValue)
-                    indexes.push(i);
-            }
-            return indexes;
-        }
-
         if(selectedColumn === 'Name') {
             for(let i = 0; i < props.data.length; ++i) {
                 if(props.data[i].name.toLowerCase() === selectedValue.toLowerCase())
@@ -54,9 +46,6 @@ function Table(props) {
     const getIndexOfFilteredContainsData = () => {
         let result;
         let indexes = [];
-        if(selectedColumn === 'Date') {
-            result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')).includes(selectedValue) && d.date.indexOf())
-        }
         if(selectedColumn === 'Name') {
             result = props.data.map(d => d.name.toLowerCase().includes(selectedValue.toLowerCase()) && d.name.indexOf())
         }
@@ -77,9 +66,6 @@ function Table(props) {
     const getIndexOfFilteredMoreData = () => {
         let result;
         let indexes = [];
-        if(selectedColumn === 'Date') {
-            result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')) > selectedValue)
-        }
         if(selectedColumn === 'Name') {
             result = props.data.map(d => d.name.toLowerCase() > selectedValue.toLowerCase())
         }
@@ -101,9 +87,6 @@ function Table(props) {
     const getIndexOfFilteredLessData = () => {
         let result;
         let indexes = [];
-        if(selectedColumn === 'Date') {
-            result = props.data.map(d => d.date.substring(0, d.date.indexOf('T')) < selectedValue)
-        }
         if(selectedColumn === 'Name') {
             result = props.data.map(d => d.name.toLowerCase() < selectedValue.toLowerCase())
         }
@@ -202,8 +185,7 @@ function Table(props) {
                 <div>
                     <span className={styles.label}>Колонка:</span>
                     <select id='columns'>
-                        <option value='Date' selected>Дата</option>
-                        <option value='Name'>Название</option>
+                        <option value='Name' selected>Название</option>
                         <option value='Amount'>Количество</option>
                         <option value='Distance'>Расстояние</option>
                     </select>
